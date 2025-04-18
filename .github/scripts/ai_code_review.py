@@ -23,27 +23,54 @@ def get_changed_files():
             changed_files.append(file)
     return changed_files
 
+def generate_prompt(code, rules):
+    # Extract categories from rules
+    categories = []
+    current_category = None
+    current_rules = []
+    
+    for line in rules.split('\n'):
+        if line.startswith('## '):
+            if current_category:
+                categories.append((current_category, current_rules))
+            current_category = line[3:].strip()
+            current_rules = []
+        elif line.startswith('- '):
+            current_rules.append(line[2:].strip())
+    
+    if current_category:
+        categories.append((current_category, current_rules))
+    
+    # Build dynamic prompt
+    prompt_parts = [
+        "Please review the following Python code against these rules:",
+        "",
+        rules,
+        "",
+        "Code to review:",
+        code,
+        "",
+        "Provide a detailed review focusing on:"
+    ]
+    
+    # Add categories as review points
+    for i, (category, _) in enumerate(categories, 1):
+        prompt_parts.append(f"{i}. {category}")
+    
+    prompt_parts.extend([
+        "",
+        "For each category, provide specific examples from the code and suggest improvements where applicable.",
+        "Format your response as a GitHub comment with markdown formatting."
+    ])
+    
+    return "\n".join(prompt_parts)
+
 def analyze_code(file_path, rules):
     with open(file_path, 'r') as f:
         code = f.read()
     
-    prompt = f"""
-    Please review the following Python code against these rules:
+    prompt = generate_prompt(code, rules)
     
-    {rules}
-    
-    Code to review:
-    {code}
-    
-    Provide a detailed review focusing on:
-    1. Code style and formatting issues
-    2. Security concerns
-    3. Performance optimizations
-    4. Documentation improvements
-    5. Testing recommendations
-    
-    Format your response as a GitHub comment with markdown formatting.
-    """
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     response = client.chat.completions.create(
         model="gpt-4o-mini",
