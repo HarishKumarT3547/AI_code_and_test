@@ -6,7 +6,6 @@ from pathlib import Path
 from openai import OpenAI
 from github import Github
 from dotenv import load_dotenv
-import openai
 
 def load_rules():
     rules_dir = Path('.ai_code_rules')
@@ -89,27 +88,13 @@ def analyze_code(file_path, rules):
     """
     
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-    
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are an expert Python code reviewer."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-    except openai.RateLimitError:
-        # Fallback to gpt-3.5-turbo if rate limit is reached
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are an expert Python code reviewer."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-    except Exception as e:
-        print(f"Error during code review: {str(e)}")
-        return f"Error during code review: {str(e)}"
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an expert Python code reviewer."},
+            {"role": "user", "content": prompt}
+        ]
+    )
     
     return response.choices[0].message.content
 
