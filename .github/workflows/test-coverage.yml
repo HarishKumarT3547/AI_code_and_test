@@ -56,6 +56,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git checkout -b feature/add-tests
+          git config pull.rebase false
           git pull origin feature/add-tests --allow-unrelated-histories
           git add tests/recommendation/
           git commit -m "Add tests for uncovered lines" || true
