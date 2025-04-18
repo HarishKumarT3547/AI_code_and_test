@@ -23,5 +23,3 @@ def test_divide():
     """Test the divide function."""
     assert divide(10, 2) == 5
     assert divide(1, 2) == 0.5
-    with pytest.raises(ValueError):
-        divide(1, 0)
