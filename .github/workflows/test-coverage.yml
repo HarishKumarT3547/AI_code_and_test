@@ -5,8 +5,8 @@ on:
     branches: [main, master]
     paths:
       - "**.py"
-      - "!tests/**"
-      - "!.github/requirements/generate-test.txt"
+      - "tests/**"
+      - ".github/requirements/generate-test.txt"
 
 jobs:
   coverage:
