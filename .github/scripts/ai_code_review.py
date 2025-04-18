@@ -114,26 +114,31 @@ def post_github_comment(github_token, repo_name, pr_number, filename, violations
     repo = g.get_repo(repo_name)
     pr = repo.get_pull(pr_number)
     
-    # Create a comment for each violation
+    if not violations:
+        return
+        
+    # Create a single comment with all violations
+    comment = f"## AI Code Review for {filename}\n\n"
+    
     for violation in violations:
-        comment = f"""
-        ## Rule Violation: {violation['rule_reference']}
-        
-        **File:** {filename}
-        **Line:** {violation['line_number']}
-        
-        **Violation:** {violation['explanation']}
-        
-        **Suggestion:**
-        ```python
-        {violation['suggestion']}
-        ```
-        
-        **Reference:** See [{violation['rule_reference']}]({violation['rule_file']}) for more details.
-        """
-        
-        # Create an issue comment
-        pr.create_issue_comment(comment)
+        comment += f"""
+### Rule Violation: {violation['rule_reference']}
+**Line:** {violation['line_number']}
+
+**Violation:** {violation['explanation']}
+
+**Suggestion:**
+```python
+{violation['suggestion']}
+```
+
+**Reference:** See [{violation['rule_reference']}]({violation['rule_file']}) for more details.
+
+---
+"""
+    
+    # Create a single issue comment with all violations
+    pr.create_issue_comment(comment)
 
 def main():
     load_dotenv()
