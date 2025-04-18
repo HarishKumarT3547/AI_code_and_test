@@ -135,9 +135,9 @@ def post_github_comment(github_token, repo_name, pr_number, filename, violations
         # Create a review comment on the specific line
         pr.create_review_comment(
             body=comment,
-            commit_id=pr.head.sha,
+            commit=pr.head.sha,
             path=filename,
-            line=violation['line_number']
+            position=violation['line_number']
         )
 
 def main():
