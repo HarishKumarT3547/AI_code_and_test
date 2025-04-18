@@ -83,7 +83,6 @@ def analyze_code(file_path, rules):
     3. Performance optimizations (algorithm efficiency, memory usage)
     4. Documentation improvements (docstrings, comments)
     5. Testing recommendations (unit tests, edge cases)
-    6. Python-specific anti-patterns (global variables, mutable defaults, etc.)
     
     Format your response as a GitHub comment with markdown formatting.
     """
