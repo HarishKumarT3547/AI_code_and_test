@@ -45,6 +45,16 @@ jobs:
         run: |
           cat coverage_report.txt
 
+      - name: Verify coverage report before commenting
+        run: |
+          if [ -f "coverage_report.txt" ]; then
+            echo "Coverage report exists."
+            cat coverage_report.txt
+          else
+            echo "Coverage report does not exist."
+            exit 1
+          fi
+
       - name: Create test files for uncovered lines
         if: always()
         env:
@@ -80,3 +90,8 @@ jobs:
               repo: context.repo.repo,
               body: `## Test Coverage Report\n\nSome lines are not covered by tests:\n\n\`\`\`\n${coverageReport}\n\`\`\`\n\nSuggested test files to add:\n\n\`\`\`python\n${testFiles}\n\`\`\``
             });
+
+      - name: Debug directory before commenting
+        run: |
+          pwd
+          ls -la
