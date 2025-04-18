@@ -132,13 +132,8 @@ def post_github_comment(github_token, repo_name, pr_number, filename, violations
         **Reference:** See [{violation['rule_reference']}]({violation['rule_file']}) for more details.
         """
         
-        # Create a review comment on the specific line
-        pr.create_review_comment(
-            body=comment,
-            commit=pr.head.sha,
-            path=filename,
-            position=violation['line_number']
-        )
+        # Create an issue comment
+        pr.create_issue_comment(comment)
 
 def main():
     load_dotenv()
