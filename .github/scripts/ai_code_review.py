@@ -59,20 +59,21 @@ def analyze_code(file_content, patch, rules):
     changed_code = '\n'.join(changed_lines)
     
     prompt = f"""
-    Please review the following Python code changes against these rules:
-    
+    You are a Python code reviewer. Review the following code changes against these rules and provide specific feedback.
+
+    Rules:
     {json.dumps([rule['content'] for rule in rules], indent=2)}
-    
+
     Changed code to review:
     {changed_code}
-    
+
     For each line of code that violates any of the rules:
     1. Identify the specific line number
     2. Reference the exact rule that was violated
     3. Provide a specific suggestion for how to fix the code
     4. Include the file path of the rule that was violated
-    
-    Format your response as a JSON object with the following structure:
+
+    IMPORTANT: Your response MUST be a valid JSON object with the following structure:
     {{
         "violations": [
             {{
@@ -84,18 +85,29 @@ def analyze_code(file_content, patch, rules):
             }}
         ]
     }}
+
+    If there are no violations, return:
+    {{
+        "violations": []
+    }}
     """
     
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are an expert Python code reviewer. Provide specific line-by-line feedback with code suggestions."},
+            {"role": "system", "content": "You are an expert Python code reviewer. Provide specific line-by-line feedback with code suggestions. Your response must be valid JSON."},
             {"role": "user", "content": prompt}
-        ]
+        ],
+        response_format={ "type": "json_object" }
     )
     
-    return response.choices[0].message.content
+    try:
+        return json.loads(response.choices[0].message.content)
+    except json.JSONDecodeError as e:
+        print(f"Error parsing AI response: {e}")
+        print("Raw response:", response.choices[0].message.content)
+        return {"violations": []}
 
 def post_github_comment(github_token, repo_name, pr_number, filename, violations):
     g = Github(github_token)
@@ -143,7 +155,7 @@ def main():
     # Analyze each changed file
     for file_info in changed_files:
         analysis = analyze_code(file_info['content'], file_info['patch'], rules)
-        violations = json.loads(analysis)['violations']
+        violations = analysis.get('violations', [])
         
         if violations:
             post_github_comment(github_token, repo_name, pr_number, file_info['filename'], violations)
