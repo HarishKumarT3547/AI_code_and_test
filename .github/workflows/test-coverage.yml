@@ -45,12 +45,12 @@ jobs:
           cat coverage_report.txt
 
       - name: Create test files for uncovered lines
-        if: failure()
+        if: always()
         run: |
           python .github/scripts/generate_tests.py
 
       - name: Commit test files
-        if: failure()
+        if: always()
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -59,7 +59,7 @@ jobs:
           git push || true
 
       - name: Comment on PR
-        if: failure()
+        if: always()
         uses: actions/github-script@v6
         with:
           script: |
