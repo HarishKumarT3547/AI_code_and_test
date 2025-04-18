@@ -69,7 +69,24 @@ def analyze_code(file_path, rules):
     with open(file_path, 'r') as f:
         code = f.read()
     
-    prompt = generate_prompt(code, rules)
+    prompt = f"""
+    Please review the following Python code against these rules:
+    
+    {rules}
+    
+    Code to review:
+    {code}
+    
+    Provide a detailed review focusing on:
+    1. Code style and formatting issues (PEP 8 compliance)
+    2. Security concerns (input validation, sensitive data handling)
+    3. Performance optimizations (algorithm efficiency, memory usage)
+    4. Documentation improvements (docstrings, comments)
+    5. Testing recommendations (unit tests, edge cases)
+    6. Python-specific anti-patterns (global variables, mutable defaults, etc.)
+    
+    Format your response as a GitHub comment with markdown formatting.
+    """
     
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     response = client.chat.completions.create(
