@@ -10,16 +10,13 @@ import json
 from pathlib import Path
 
 def read_coverage_data():
-    """Read the coverage data from the .coverage file."""
+    """Read the coverage data from the JSON file."""
     try:
-        with open('.coverage', 'r') as f:
+        with open('coverage.json', 'r', encoding='utf-8') as f:
             return json.load(f)
-    except FileNotFoundError:
-        print("Error: .coverage file not found. Run coverage first.")
-        sys.exit(1)
-    except json.JSONDecodeError:
-        print("Error: Invalid .coverage file format.")
-        sys.exit(1)
+    except UnicodeDecodeError:
+        with open('coverage.json', 'r', encoding='latin-1') as f:
+            return json.load(f)
 
 def analyze_uncovered_lines(coverage_data):
     """Analyze coverage data to find uncovered lines."""
