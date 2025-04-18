@@ -52,8 +52,7 @@ jobs:
           script: |
             const fs = require('fs');
             const coverageReport = fs.readFileSync('coverage_report.txt', 'utf8');
-            # const testFiles = fs.readFileSync('tests/recommendation/test_suggestions.txt', 'utf8');
-  
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -90,8 +89,6 @@ jobs:
           git add tests/recommendation/
           git commit -m "Add tests for uncovered lines" || true
           git push origin feature/add-tests || true
-
-      
 
       - name: Debug directory before commenting
         run: |
