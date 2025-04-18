@@ -69,8 +69,6 @@ def post_github_comment(review, file_path):
 
 def main():
     load_dotenv()
-    openai.api_key = os.getenv('OPENAI_API_KEY')
-    
     rules = load_rules()
     changed_files = get_changed_files()
     
