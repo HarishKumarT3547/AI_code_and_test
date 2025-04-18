@@ -39,9 +39,12 @@ def generate_test_suggestions_with_openai(uncovered):
     for file_path, lines in uncovered.items():
         test_file_name = f"test_{Path(file_path).stem}.py"
         prompt = f"Generate a test function for the following lines in {file_path}:\nLines: {', '.join(map(str, lines))}\n\nTest function:"
-        response = client.completions.create(
-            model="text-davinci-003",  # Use the appropriate model
-            prompt=prompt,
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",  # Use the appropriate model
+            messages=[
+                {"role": "system", "content": "You are a Python developer. Generate a test function for the given lines of code."},
+                {"role": "user", "content": prompt}
+            ],
             max_tokens=150,
             temperature=0.7
         )
