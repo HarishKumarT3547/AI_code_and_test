@@ -47,6 +47,8 @@ jobs:
 
       - name: Create test files for uncovered lines
         if: always()
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python .github/scripts/generate_tests.py
 
