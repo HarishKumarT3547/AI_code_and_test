@@ -3,7 +3,7 @@ import sys
 import glob
 import json
 from pathlib import Path
-import openai
+from openai import OpenAI
 from github import Github
 from dotenv import load_dotenv
 
@@ -44,9 +44,9 @@ def analyze_code(file_path, rules):
     
     Format your response as a GitHub comment with markdown formatting.
     """
-    
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
+    client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are an expert Python code reviewer."},
             {"role": "user", "content": prompt}
