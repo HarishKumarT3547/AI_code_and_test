@@ -45,6 +45,22 @@ jobs:
         run: |
           cat coverage_report.txt
 
+      - name: Comment on PR
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const coverageReport = fs.readFileSync('coverage_report.txt', 'utf8');
+            # const testFiles = fs.readFileSync('tests/recommendation/test_suggestions.txt', 'utf8');
+  
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Test Coverage Report\n\nSome lines are not covered by tests:\n\n\`\`\`\n${coverageReport}\n\`\`\`\n\n\`\`\``
+            });
+
       - name: Verify coverage report before commenting
         run: |
           if [ -f "coverage_report.txt" ]; then
@@ -75,21 +91,7 @@ jobs:
           git commit -m "Add tests for uncovered lines" || true
           git push origin feature/add-tests || true
 
-      - name: Comment on PR
-        if: always()
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const coverageReport = fs.readFileSync('coverage_report.txt', 'utf8');
-            const testFiles = fs.readFileSync('tests/recommendation/test_suggestions.txt', 'utf8');
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## Test Coverage Report\n\nSome lines are not covered by tests:\n\n\`\`\`\n${coverageReport}\n\`\`\`\n\nSuggested test files to add:\n\n\`\`\`python\n${testFiles}\n\`\`\``
-            });
+      
 
       - name: Debug directory before commenting
         run: |
