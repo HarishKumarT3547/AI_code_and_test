@@ -122,4 +122,40 @@ def test_create_user_invalid_phone():
     )
     assert response == {"error": "Invalid phone number"}
 
-# Additional tests can be added here for other scenarios 
+def test_create_user_missing_fields():
+    """Test creating a user with missing required fields."""
+    response = create_user(
+        first_name="Bob",
+        last_name="Johnson",
+        email="bob.johnson@example.com",
+        password="validpassword",
+        phone="1234567890",
+        address="101 Pine St",
+        city="Newtown",
+        state="FL",
+        zip_code="12345",
+        country="USA",
+        dob="1980-04-04",
+        gender="Male",
+        occupation="Teacher"
+    )
+    assert response == {"error": "Missing required fields"}
+
+def test_create_user_invalid_email():
+    """Test creating a user with an invalid email format."""
+    response = create_user(
+        first_name="Charlie",
+        last_name="Brown",
+        email="invalid-email",  # Invalid email format
+        password="validpassword",
+        phone="1234567890",
+        address="202 Oak St",
+        city="Oldtown",
+        state="OH",
+        zip_code="54321",
+        country="USA",
+        dob="1975-05-05",
+        gender="Male",
+        occupation="Artist"
+    )
+    assert response == {"error": "Invalid email format"}
