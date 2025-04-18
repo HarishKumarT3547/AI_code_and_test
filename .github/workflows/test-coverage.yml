@@ -6,7 +6,7 @@ on:
     paths:
       - "**.py"
       - "!tests/**"
-      - "!.github/requirements/test.txt"
+      - "!.github/requirements/generate-test.txt"
 
 jobs:
   coverage:
