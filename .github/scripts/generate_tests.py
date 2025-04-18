@@ -9,7 +9,10 @@ import sys
 import json
 from openai import OpenAI
 from pathlib import Path
+from datetime import datetime
 
+# Initialize OpenAI client
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 def read_coverage_data():
     """Read the coverage data from the JSON file."""
@@ -32,15 +35,12 @@ def analyze_uncovered_lines(coverage_data):
 
 def generate_test_suggestions_with_openai(uncovered):
     """Generate test suggestions for uncovered lines using OpenAI."""
-    
-# Set your OpenAI API key
-    openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))   
     suggestions = []
     for file_path, lines in uncovered.items():
         test_file_name = f"test_{Path(file_path).stem}.py"
         prompt = f"Generate a test function for the following lines in {file_path}:\nLines: {', '.join(map(str, lines))}\n\nTest function:"
-        response = openai.Completion.create(
-            engine="gpt-4o-mini",  # Use the appropriate engine
+        response = client.completions.create(
+            model="text-davinci-003",  # Use the appropriate model
             prompt=prompt,
             max_tokens=150,
             temperature=0.7
@@ -54,10 +54,14 @@ def generate_test_suggestions_with_openai(uncovered):
     return suggestions
 
 def write_suggestions(suggestions):
-    """Write test suggestions to a file."""
+    """Write test suggestions to a file with the current date and time."""
     # Ensure the recommendation directory exists
     os.makedirs('tests/recommendation', exist_ok=True)
-    with open('tests/recommendation/test_suggestions.txt', 'w') as f:
+    # Get current date and time
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    # Create file name with date and time
+    file_name = f'test_suggestions_{current_time}.txt'
+    with open(f'tests/recommendation/{file_name}', 'w') as f:
         f.write('\n'.join(suggestions))
 
 def main():
@@ -66,7 +70,7 @@ def main():
     uncovered = analyze_uncovered_lines(coverage_data)
     suggestions = generate_test_suggestions_with_openai(uncovered)
     write_suggestions(suggestions)
-    print("Test suggestions generated in test_suggestions.txt")
+    print(f"Test suggestions generated in test_suggestions_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt")
 
 if __name__ == "__main__":
     main() 
