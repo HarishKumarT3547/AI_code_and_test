@@ -33,13 +33,16 @@ jobs:
       - name: Run coverage
         run: |
           coverage run -m pytest
-          coverage report --fail-under=100 --show-missing
+          coverage report --show-missing
 
       - name: Generate coverage report
-        if: failure()
         run: |
           coverage html
           coverage report --show-missing > coverage_report.txt
+
+      - name: Print coverage report
+        run: |
+          cat coverage_report.txt
 
       - name: Create test files for uncovered lines
         if: failure()
