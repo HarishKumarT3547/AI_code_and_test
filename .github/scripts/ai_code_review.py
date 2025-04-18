@@ -58,8 +58,8 @@ def analyze_code(file_content, patch, rules):
     
     changed_code = '\n'.join(changed_lines)
     
-    prompt = f"""
-    You are a Python code reviewer. Review the following code changes against these rules and provide specific feedback.
+    prompt = """
+    You are a code reviewer. Your task is to review the provided code and provide feedback based on the following rules and structure.
 
     Rules:
     {json.dumps([rule['content'] for rule in rules], indent=2)}
