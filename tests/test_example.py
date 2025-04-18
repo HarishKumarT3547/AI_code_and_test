@@ -1,5 +1,5 @@
 import pytest
-from createUser import createUser  # Replace 'your_module' with the actual module name
+from createUser import create_user  # Replace 'your_module' with the actual module name
 
 def test_example():
     """Example test function."""
@@ -64,16 +64,16 @@ def test_boolean_logic():
 
 def test_create_user_valid():
     """Test creating a user with valid data."""
-    user = createUser(
-        firstName="John",
-        lastName="Doe",
+    user = create_user(
+        first_name="John",
+        last_name="Doe",
         email="john.doe@example.com",
         password="securepassword",
         phone="1234567890",
         address="123 Main St",
         city="Anytown",
         state="CA",
-        zipCode="12345",
+        zip_code="12345",
         country="USA",
         dob="1990-01-01",
         gender="Male",
@@ -86,16 +86,16 @@ def test_create_user_valid():
 
 def test_create_user_short_password():
     """Test creating a user with a short password."""
-    response = createUser(
-        firstName="Jane",
-        lastName="Doe",
+    response = create_user(
+        first_name="Jane",
+        last_name="Doe",
         email="jane.doe@example.com",
         password="short",
         phone="1234567890",
         address="456 Elm St",
         city="Othertown",
         state="NY",
-        zipCode="54321",
+        zip_code="54321",
         country="USA",
         dob="1992-02-02",
         gender="Female",
@@ -105,16 +105,16 @@ def test_create_user_short_password():
 
 def test_create_user_invalid_phone():
     """Test creating a user with an invalid phone number."""
-    response = createUser(
-        firstName="Alice",
-        lastName="Smith",
+    response = create_user(
+        first_name="Alice",
+        last_name="Smith",
         email="alice.smith@example.com",
         password="validpassword",
         phone="12345",  # Invalid phone number
         address="789 Oak St",
         city="Sometown",
         state="TX",
-        zipCode="67890",
+        zip_code="67890",
         country="USA",
         dob="1985-03-03",
         gender="Female",
