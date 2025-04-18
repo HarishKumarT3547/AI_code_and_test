@@ -48,7 +48,13 @@ def generate_test_suggestions_with_openai(uncovered):
             max_tokens=150,
             temperature=0.7
         )
-        test_function = response.choices[0].text.strip()
+        # Check the structure of the response and use the correct attribute
+        if hasattr(response.choices[0], 'text'):
+            test_function = response.choices[0].text.strip()
+        elif hasattr(response.choices[0], 'message'):
+            test_function = response.choices[0].message.content.strip()
+        else:
+            test_function = str(response.choices[0])  # Fallback to string representation
         suggestions.append(f"# Suggested test file: {test_file_name}")
         suggestions.append(f"# For file: {file_path}")
         suggestions.append(f"# Uncovered lines: {', '.join(map(str, lines))}")
