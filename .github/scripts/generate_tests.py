@@ -41,7 +41,9 @@ def generate_test_suggestions(uncovered):
 
 def write_suggestions(suggestions):
     """Write test suggestions to a file."""
-    with open('test_suggestions.txt', 'w') as f:
+    # Ensure the recommendation directory exists
+    os.makedirs('tests/recommendation', exist_ok=True)
+    with open('tests/recommendation/test_suggestions.txt', 'w') as f:
         f.write('\n'.join(suggestions))
 
 def main():

@@ -56,7 +56,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git checkout -b feature/add-tests
-          git add tests/
+          git add tests/recommendation/
           git commit -m "Add tests for uncovered lines" || true
           git push origin feature/add-tests || true
 
